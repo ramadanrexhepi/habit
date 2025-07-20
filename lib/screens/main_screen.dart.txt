@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'home.dart';
+import 'progress_screen.dart';
+import 'calendar_heatmap_screen.dart';
+import 'account_screen.dart';
+import '../models/habit.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  List<Habit> habits = [
+    Habit(name: 'Drink Water', category: 'Health'),
+    Habit(name: 'Read Book', category: 'Learning'),
+    Habit(name: 'Workout', category: 'Fitness'),
+  ];
+
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomeScreen(habits: habits),
+      ProgressScreen(habits: habits),
+      CalendarHeatmapScreen(habits: habits),
+      const AccountScreen(),
+    ];
+  }
+
+  void _onTabTapped(int index) {
+    setState(() => _selectedIndex = index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        onTap: _onTabTapped,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.check_circle), label: 'Today'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+        ],
+      ),
+    );
+  }
+}
